@@ -14,18 +14,28 @@ float dist1 = 0;
 float dist2 = 0;
  
 float finnPosisjonenY(float d2,float d3){  //Funksjon som returnerer x-verdien
-    float d1=10;                                   //lengden mellom basestasjonene
+    float d1=5;                                   //lengden mellom basestasjonene
+    float y;
 
-    float y=(pow(d1,2)+pow(d2,2)-pow(d3,2))/(2*d1);   //formel
-    
+    if (d2+d3 < d1) {
+        y = 0;
+    } 
+    else {
+        y=(pow(d1,2)+pow(d2,2)-pow(d3,2))/(2*d1);   //formel
+    }
     return y;
 }
 
 float finnPosisjonenX(float d2,float d3){  //Funksjon som returnerer y-verdi
-    float d1=10;
+    float d1=5;
+    float x;
 
-    float x=sqrt(pow(d2,2)-pow(finnPosisjonenY(d2,d3),2));    //formel
-    
+    if (d2+d3 < d1) {
+        x = d1/2;
+    } 
+    else {
+        x=sqrt(pow(d2,2)-pow(finnPosisjonenY(d2,d3),2));    //formel
+    }
     return x;
 }
 
@@ -76,30 +86,8 @@ void loop(){
             Serial.println(dist1);
         }
         delay(100);
-        float x = finnPosisjonenX(7,7);
-        float y = finnPosisjonenY(7,7);
-
-        Serial.print("X: ");
-        Serial.print(x);
-        Serial.print("Y: ");
-        Serial.println(y);
-
-        x = finnPosisjonenX(0.7,0.7);
-        y = finnPosisjonenY(0.7,0.7);
-
-        Serial.print("X: ");
-        Serial.print(x);
-        Serial.print("Y: ");
-        Serial.println(y);
-        x = finnPosisjonenX(.2,2);
-        y = finnPosisjonenY(.2,2);
-
-        Serial.print("X: ");
-        Serial.print(x);
-        Serial.print("Y: ");
-        Serial.println(y);
-        x = finnPosisjonenX(.8,1);
-        y = finnPosisjonenY(.8,1);
+        float x = finnPosisjonenX(dist1,dist2);
+        float y = finnPosisjonenY(dist1,dist2);
 
         Serial.print("X: ");
         Serial.print(x);

@@ -1,7 +1,6 @@
 #include <SoftwareSerial.h>
 SoftwareSerial mySerial(2, 3); // RX, TX
 
-
 #include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
@@ -34,32 +33,14 @@ void loop(){
     boolean StringReady = false;
 
     while (mySerial.available()){
-        Serial.println("fett");
         IncomingString=mySerial.readString();
         StringReady= true;
     }
     
     if (StringReady){
         float dist1 = findDist(IncomingString);
-        Serial.println("If going to crash into eachother");
-        Serial.println(dist1);
-
-        //radio.startListening();
-        //delay(100);
-        //if ( radio.available()) {
-        //    Serial.println("Don't");
-        //    while (radio.available()) {
-        //        radio.read(&ok, sizeof(ok));
-        //        if (ok) {
-        //            Serial.println("ok");
-        //            break;
-        //        }
-        //    }
-        //}
-        //radio.stopListening();
         delay(100);
         for (int i = 0; i <= 20; i++) {
-            Serial.println("send");
             radio.write(&dist1, sizeof(dist1));
             delay(100);
         }

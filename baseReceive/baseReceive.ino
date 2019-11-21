@@ -14,7 +14,7 @@ float dist1 = 0;
 float dist2 = 0;
  
 float finnPosisjonenY(float d2,float d3){  //Funksjon som returnerer x-verdien
-    float d1=5;                                   //lengden mellom basestasjonene
+    float d1=1;                                   //lengden mellom basestasjonene
     float y;
 
     if (d2+d3 < d1) {
@@ -27,7 +27,7 @@ float finnPosisjonenY(float d2,float d3){  //Funksjon som returnerer x-verdien
 }
 
 float finnPosisjonenX(float d2,float d3){  //Funksjon som returnerer y-verdi
-    float d1=5;
+    float d1=1;
     float x;
 
     if (d2+d3 < d1) {
@@ -39,9 +39,10 @@ float finnPosisjonenX(float d2,float d3){  //Funksjon som returnerer y-verdi
     return x;
 }
 
-float findDist(String s) {
+//Tar rssi som input og returnerer avstanden
+float findDist(String s) {  
     int rssi = s.toInt();
-    float dist = exp((rssi + 54.102)/-9.585);
+    float dist = exp((rssi + 54.102)/-9.585); //bruker formelen for avstand til basert på rssi
     return dist;
 }
 
@@ -67,32 +68,21 @@ void loop(){
         StringReady= true;
     }
 
-    if (StringReady){
-        float dist2 = findDist(IncomingString);
-        Serial.print("dist2 ");
-        Serial.println(dist2);
-        //radio.stopListening();
-
-        //bool ok = true;
-
-        //delay(1000);
-        //radio.write(&ok, sizeof(ok));
-
-        //radio.startListening();
-        //delay(100);
-        if (radio.available()) {
-         	radio.read(&dist1, sizeof(dist1));
-            Serial.print("dist1 ");
-            Serial.println(dist1);
+    if (StringReady){ //hvis den har hentet streng data fra ESP-en
+        float dist2 = findDist(IncomingString); //finner avstanden
+        if (radio.available()) { //Hvis nrf-modulen mottar data
+         	radio.read(&dist1, sizeof(dist1)); // setter dist1 til den mottate avstanden
         }
         delay(100);
+        //Beregner posisjoenen for x og y
         float x = finnPosisjonenX(dist1,dist2);
         float y = finnPosisjonenY(dist1,dist2);
 
-        Serial.print("X: ");
+        //sender x og y til pcen over serial
         Serial.print(x);
-        Serial.print("Y: ");
+        Serial.print(",");
         Serial.println(y);
+        
     }
     delay(10);
 }

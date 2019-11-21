@@ -1,13 +1,16 @@
-#include <SoftwareSerial.h>
-SoftwareSerial mySerial(2, 3); // RX, TX
+#include <SoftwareSerial.h> //importerer bibliotek for seriell kommunikasjon
+SoftwareSerial mySerial(2, 3); // // setter opp pin 2, 3 som RX, TX
  
+
 #include <math.h>
 
+//importerer noen pakker for å kommunisere med nrf-modulen
 #include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
- 
-RF24 radio(7, 8); // CE, CSN
+
+// Velger hvilke porter som brukes for CE og CSN
+RF24 radio(7, 8); 
  
 const byte address[][6] = {"Node1"};
 float dist1 = 0;
@@ -42,29 +45,30 @@ float finnPosisjonenX(float d2,float d3){  //Funksjon som returnerer y-verdi
 //Tar rssi som input og returnerer avstanden
 float findDist(String s) {  
     int rssi = s.toInt();
-    float dist = exp((rssi + 54.102)/-9.585); //bruker formelen for avstand til basert på rssi
+    //bruker formelen for avstand til basert på rssi
+    float dist = exp((rssi + 54.102)/-9.585);    
     return dist;
 }
 
 void setup()
 {
     Serial.begin(9600);
-    mySerial.begin(9600);
+    mySerial.begin(9600); //iverksetter kommunikasjonsprotokollen
     delay(5000);
     Serial.print("Setup Complete");
 
-    radio.begin();
-    radio.openReadingPipe(0, address);
-    radio.setPALevel(RF24_PA_MIN);
-    radio.startListening(); 
+    radio.begin();                      // Aktiverer modulen
+    radio.openReadingPipe(0, address);  // Åpner kobling for å lese fra modulen
+    radio.setPALevel(RF24_PA_MIN);      // Setter riktig antennestyrke
+    radio.startListening();             // Bestemmer at modulen skal motta data
 }
 
 void loop(){
-    String IncomingString="";
+    String IncomingString=""; //resetter informajson fra forrige loop
     boolean StringReady = false;
 
-    if (mySerial.available()){
-        IncomingString=mySerial.readString();
+    if (mySerial.available()){ //hvis det ligger data fra ESP-en i systemet
+        IncomingString=mySerial.readString(); //hentes den og lagres som incomingstring
         StringReady= true;
     }
 
@@ -78,7 +82,7 @@ void loop(){
         float x = finnPosisjonenX(dist1,dist2);
         float y = finnPosisjonenY(dist1,dist2);
 
-        //sender x og y til pcen over serial
+        //sender x og y til pcen 
         Serial.print(x);
         Serial.print(",");
         Serial.println(y);
